@@ -62,7 +62,7 @@ class Base():
         """ Load all objects from file
         """
         s_class = cls.__name__
-        file_path = ".db_{}.json".format(s_class)
+        file_path = path.join(path.dirname(__file__), "..", "..", ".db_{}.json".format(s_class))
         DATA[s_class] = {}
         if not path.exists(file_path):
             return
