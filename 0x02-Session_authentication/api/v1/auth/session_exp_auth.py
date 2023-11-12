@@ -15,19 +15,28 @@ class SessionExpAuth(SessionAuth):
     that is limited by expiration date"""
 
     def __init__(self) -> None:
+        """init session duration to be equal to
+        SESSION_DURATION environment variable"""
+
         self.session_duration = int(getenv("SESSION_DURATION", "0"))
 
     def create_session(self, user_id=None):
+        """create session using user id with
+        created_at added to it to limit it by expiration time"""
+
         sess_id = super().create_session(user_id)
         if sess_id is None:
             return None
         SessionExpAuth.user_id_by_session_id[sess_id] = {
             "user_id": user_id,
             "created_at": datetime.now()
-		}
+        }
         return sess_id
-    
+
     def user_id_for_session_id(self, session_id=None):
+        """using session id to validate session info
+        and session duration"""
+
         if session_id is None:
             return None
         sess_info = SessionExpAuth.user_id_by_session_id.get(session_id)
