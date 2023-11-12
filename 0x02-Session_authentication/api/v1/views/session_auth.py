@@ -36,6 +36,7 @@ def login_user_route():
 @app_views.route("/auth_session/logout", methods=["DELETE"],
                  strict_slashes=False)
 def delete_session_route():
+    """route for making logout request to server"""
     from api.v1.app import auth
     is_destroyed = auth.destroy_session(request)
     if is_destroyed:
