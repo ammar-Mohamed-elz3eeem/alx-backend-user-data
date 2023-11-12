@@ -53,12 +53,26 @@ class BasicAuth(Auth):
                                      user_pwd: str
                                      ) -> TypeVar('User'):
         """check that userinfo is same info found in database"""
-        if not isinstance(user_email, str) or not isinstance(user_pwd, str):
+        if not isinstance(user_email, str):
+            return None
+        if not isinstance(user_pwd, str):
             return None
         User.load_from_file()
+        print(User.all())
         user = User.search({"email": user_email})
+        print(user)
         if len(user) == 0:
             return None
         if not user[0].is_valid_password(user_pwd):
+            print("password is invalid")
             return None
+        print("password is valid")
         return user[0]
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """get current user from the autherization key"""
+        user_tuple = self.extract_user_credentials(
+                self.decode_base64_authorization_header(
+                    self.extract_base64_authorization_header(
+                        self.authorization_header(request))))
+        return self.user_object_from_credentials(user_tuple[0], user_tuple[1])
