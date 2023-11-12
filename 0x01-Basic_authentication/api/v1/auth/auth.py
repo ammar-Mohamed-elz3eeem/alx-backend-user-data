@@ -15,10 +15,13 @@ class Auth:
             return True
         if excluded_paths is None or len(excluded_paths) == 0:
             return True
-        if "{}/".format(path) in excluded_paths or path in excluded_paths:
-            return False
-        else:
-            return True
+        for ex_path in excluded_paths:
+            if "*" in ex_path:
+                if path.startswith(ex_path[:-1]):
+                    return False
+            if "{}/".format(path) == ex_path or path == ex_path:
+                return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """check that header have authorization string"""
