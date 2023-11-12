@@ -13,11 +13,12 @@ class SessionDBAuth(SessionExpAuth):
     def create_session(self, user_id=None):
         """create session for user_id and save it in the dictionary"""
         session_id = super().create_session(user_id)
-        
+
         if session_id is None:
             return None
 
-        user_sess = UserSession(**{"user_id": user_id, "session_id": session_id})
+        user_sess = UserSession(**{"user_id": user_id,
+                                   "session_id": session_id})
         user_sess.save()
         UserSession.save_to_file()
         return session_id
