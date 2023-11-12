@@ -30,7 +30,7 @@ class SessionDBAuth(SessionExpAuth):
         UserSession.load_from_file()
         user_sess = UserSession.search({"session_id": session_id})
 
-        if user_sess is None:
+        if user_sess is None or len(user_sess) == 0:
             return None
         user_sess = user_sess[0]
         expired = user_sess.created_at + \
@@ -51,7 +51,7 @@ class SessionDBAuth(SessionExpAuth):
         if not user_id:
             return False
         user_sess = UserSession.search({"session_id": sess_id})
-        if user_sess is None or len(sess_id) == 0:
+        if user_sess is None or len(user_sess) == 0:
             return False
         try:
             user_sess[0].remove()
