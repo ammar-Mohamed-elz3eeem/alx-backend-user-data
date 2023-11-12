@@ -23,6 +23,8 @@ if getenv("AUTH_TYPE", "") == "auth":
 
 @app.before_request
 def check_auth():
+    """Check for every request if it requires authentication or not"""
+
     if auth is None:
         return
     if auth.require_auth(request.path,
