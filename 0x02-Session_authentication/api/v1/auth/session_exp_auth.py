@@ -18,7 +18,10 @@ class SessionExpAuth(SessionAuth):
         """init session duration to be equal to
         SESSION_DURATION environment variable"""
 
-        self.session_duration = int(getenv("SESSION_DURATION", "0"))
+        try:
+            self.session_duration = int(getenv("SESSION_DURATION"))
+        except Exception:
+            self.session_duration = 0
 
     def create_session(self, user_id=None):
         """create session using user id with
