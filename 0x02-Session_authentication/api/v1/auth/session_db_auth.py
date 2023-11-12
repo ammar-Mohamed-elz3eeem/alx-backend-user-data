@@ -12,17 +12,19 @@ class SessionDBAuth(SessionExpAuth):
 
     def create_session(self, user_id=None):
         """create session for user_id and save it in the dictionary"""
-        if (user_id is None or type(user_id) is not str):
+        session_id = super().create_session(user_id)
+        
+        if session_id is None:
             return None
 
-        user_sess = UserSession(user_id)
+        user_sess = UserSession(**{"user_id": user_id, "session_id": session_id})
         user_sess.save()
         UserSession.save_to_file()
-        return user_sess.session_id
+        return session_id
 
     def user_id_for_session_id(self, session_id=None):
         """using session id to validate session info"""
-        if (session_id is None or type(session_id) is not str):
+        if session_id is None:
             return None
 
         UserSession.load_from_file()
@@ -44,6 +46,9 @@ class SessionDBAuth(SessionExpAuth):
             return False
         sess_id = self.session_cookie(request)
         if sess_id is None:
+            return False
+        user_id = self.user_id_for_session_id(sess_id)
+        if not user_id:
             return False
         user_sess = UserSession.search({"session_id": sess_id})
         if user_sess is None or len(sess_id) == 0:
