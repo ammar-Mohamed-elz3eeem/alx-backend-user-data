@@ -2,7 +2,7 @@
 """hash password module"""
 from user import User
 from db import DB
-from flask import jsonify, Flask, request, abort, Response
+from flask import jsonify, Flask, request, abort, make_response
 from auth import Auth
 
 
@@ -10,13 +10,13 @@ AUTH = Auth()
 app = Flask("__main__")
 
 
-@app.route("/", methods=["GET"], strict_slashes=True)
+@app.route("/", methods=["GET"], strict_slashes=False)
 def home_page():
     """Homepage route"""
     return jsonify({"message": "Bienvenue"}), 200
 
 
-@app.route("/users", methods=["POST"], strict_slashes=True)
+@app.route("/users", methods=["POST"], strict_slashes=False)
 def users():
     """Users post route to register new users"""
     try:
@@ -33,7 +33,7 @@ def users():
     return jsonify({"email": f"{email}", "message": "user created"})
 
 
-@app.route("/sessions", methods=["POST"], strict_slashes=True)
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login():
     """Users post reoute to login them in system"""
     email = request.form.get("email", "")
@@ -43,7 +43,8 @@ def login():
         return abort(401)
 
     sess_id = AUTH.create_session(email)
-    res = Response(jsonify({"email": f"{email}", "message": "logged in"}), 200)
+    res = make_response(jsonify({"email": f"{email}",
+                                 "message": "logged in"}), 200)
     res.set_cookie("session_id", sess_id)
     return res
 
