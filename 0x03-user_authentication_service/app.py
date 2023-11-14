@@ -2,7 +2,7 @@
 """hash password module"""
 from user import User
 from db import DB
-from flask import jsonify, Flask, request, abort, make_response
+from flask import jsonify, Flask, request, abort, make_response, redirect
 from auth import Auth
 
 
@@ -23,7 +23,7 @@ def users():
         email = request.form['email']
         password = request.form['password']
     except Exception:
-        abort(400)
+        return abort(400)
 
     try:
         AUTH.register_user(email, password)
@@ -47,6 +47,42 @@ def login():
                                  "message": "logged in"}), 200)
     res.set_cookie("session_id", sess_id)
     return res
+
+
+@app.route("/sessions", methods=['DELETE'], strict_slashes=False)
+def logout():
+    """destroy user's session"""
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        return abort(403)
+    user = AUTH.get_user_from_session_id(session_id)
+    if not user:
+        return abort(403)
+    AUTH.destroy_session(user.id)
+    return redirect("/")
+
+
+@app.route("/profile", methods=['GET'], strict_slashes=False)
+def profile():
+    """get current logged in user profile"""
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        return abort(403)
+    user = AUTH.get_user_from_session_id(session_id)
+    if not user:
+        return abort(403)
+    return jsonify({"email": f"{user.email}"}), 200
+
+
+@app.route("/reset_password", methods=["POST"], strict_slashes=False)
+def get_reset_password_token():
+    """get reset password token for the user"""
+    email = request.form.get("email", "")
+    try:
+        token = AUTH.get_reset_password_token(email)
+        return jsonify({"email": f"{email}", "reset_token": f"{token}"})
+    except Exception:
+        return abort(403)
 
 
 if __name__ == "__main__":
