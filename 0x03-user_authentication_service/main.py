@@ -7,7 +7,7 @@ def register_user(email: str, password: str) -> None:
     res = requests.post("http://localhost:5000/users", {
         "email": email,
         "password": password
-	})
+    })
     assert res.status_code == 400
     assert res.json()["message"] == 'email already registered'
 
@@ -16,7 +16,7 @@ def log_in_wrong_password(email: str, password: str) -> None:
     res = requests.post("http://localhost:5000/sessions", {
         "email": email,
         "password": password
-	})
+    })
     assert res.status_code != 200
 
 
@@ -24,7 +24,7 @@ def log_in(email: str, password: str) -> str:
     res = requests.post("http://localhost:5000/sessions", {
         "email": email,
         "password": password
-	})
+    })
     return res.cookies.get("session_id")
 
 
@@ -47,8 +47,8 @@ def log_out(session_id: str) -> None:
 
 def reset_password_token(email: str) -> str:
     res = requests.post("http://localhost:5000/reset_password", {
-		"email": email
-	})
+        "email": email
+    })
     assert res.status_code != 403
     assert res.json()["email"] == email
     assert len(res.json()["reset_token"]) > 0
@@ -60,7 +60,7 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
         "email": email,
         "reset_token": reset_token,
         "new_password": new_password
-	})
+    })
     assert res.status_code != 403
     assert res.status_code == 200
     assert res.json()["email"] == email
