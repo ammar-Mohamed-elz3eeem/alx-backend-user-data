@@ -65,7 +65,8 @@ class DB:
         parameter user_id with list of keyworded arguemnts"""
         user = self.find_user_by(id=user_id)
         for key, value in kwargs.items():
-            if key not in User.__table__.columns.keys():
+            if key in User.__table__.columns.keys():
+                setattr(user, key, value)
+            else:
                 raise ValueError()
-            setattr(user, key, value)
         self._session.commit()
