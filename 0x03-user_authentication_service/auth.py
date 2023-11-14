@@ -43,6 +43,14 @@ class Auth:
         except Exception:
             return None
 
+    def get_user_from_session_id(self, sess_id: str) -> User:
+        if not sess_id:
+            return None
+        try:
+            return self._db.find_user_by(session_id=sess_id)
+        except Exception:
+            return None
+
 
 def _hash_password(passwd: str) -> str:
     """hash given password string using bcrypt"""
