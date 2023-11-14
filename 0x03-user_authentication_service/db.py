@@ -32,9 +32,7 @@ class DB:
 
     def add_user(self, email, hashed_password):
         """adds new user to database"""
-        new_user = User()
-        new_user.email = email
-        new_user.hashed_password = hashed_password
+        new_user = User(email=email, hashed_password=hashed_password)
         self._session.add(new_user)
         self._session.commit()
         return new_user
@@ -46,7 +44,7 @@ class DB:
         if result is None:
             raise NoResultFound
         return result
-    
+
     def update_user(self, user_id, **kwargs):
         """update database user whose id equal to
         parameter user_id with list of keyworded arguemnts"""
