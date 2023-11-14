@@ -86,9 +86,9 @@ class Auth:
                              reset_token=None)
 
 
-def _hash_password(passwd: str) -> str:
+def _hash_password(password: str) -> str:
     """hash given password string using bcrypt"""
-    return bcrypt.hashpw(passwd.encode(), bcrypt.gensalt(10))
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
