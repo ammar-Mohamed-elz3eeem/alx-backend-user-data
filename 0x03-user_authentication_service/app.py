@@ -36,21 +36,16 @@ def users():
 @app.route("/sessions", methods=["POST"], strict_slashes=True)
 def login():
     """Users post reoute to login them in system"""
-    try:
-        email = request.form['email']
-        password = request.form['password']
-    except Exception:
-        return abort(400)
+    email = request.form.get("email", "")
+    password = request.form.get("password", "")
 
-    if AUTH.valid_login(email, password):
-        sess_id = AUTH.create_session(email)
-        res = Response(jsonify({"email": f"{email}",
-                                "message": "logged in"
-                                }),
-                       200).set_cookie("session_id", sess_id)
-        return res
-    else:
+    if not AUTH.valid_login(email, password):
         return abort(401)
+
+    sess_id = AUTH.create_session(email)
+    res = Response(jsonify({"email": f"{email}", "message": "logged in"}), 200)
+    res.set_cookie("session_id", sess_id)
+    return res
 
 
 if __name__ == "__main__":
