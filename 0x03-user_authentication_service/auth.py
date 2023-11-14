@@ -44,7 +44,7 @@ class Auth:
             return None
 
 
-def _hash_password(passwd: str) -> bytes:
+def _hash_password(passwd: str) -> str:
     """hash given password string using bcrypt"""
     return bcrypt.hashpw(passwd.encode(), bcrypt.gensalt(10))
 
