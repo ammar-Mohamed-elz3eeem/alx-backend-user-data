@@ -31,7 +31,16 @@ class DB:
         return self.__session
 
     def add_user(self, email: str, hashed_password: str) -> User:
-        """adds new user to database"""
+        """adds new user to database via sqlalchemy session
+
+        Args:
+            email (str): user email
+            hashed_password (str): user password after
+            being hashed with bcrypt
+
+        Returns:
+            User: newely created user
+        """
         user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
         self._session.commit()
