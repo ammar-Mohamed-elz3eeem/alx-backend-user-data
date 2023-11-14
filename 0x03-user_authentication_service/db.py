@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from user import Base, User
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, InvalidRequestError
 
 
 class DB:
@@ -40,6 +40,11 @@ class DB:
     def find_user_by(self, **kwargs):
         """find user in database using arbitary number
         of passed keyword arguments"""
+        if not kwargs:
+            raise InvalidRequestError
+        for key in kwargs.keys():
+            if key not in User.__table__.columns.keys():
+                raise InvalidRequestError
         result = self._session.query(User).filter_by(**kwargs).first()
         if result is None:
             raise NoResultFound
