@@ -60,7 +60,7 @@ class DB:
             raise NoResultFound
         return result
 
-    def update_user(self, user_id, **kwargs):
+    def update_user(self, user_id: int, **kwargs) -> None:
         """update database user whose id equal to
         parameter user_id with list of keyworded arguemnts"""
         user = self.find_user_by(id=user_id)
