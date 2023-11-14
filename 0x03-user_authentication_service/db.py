@@ -30,7 +30,7 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email: str, hashed_password: str) -> User:
+    def add_user (self, email: str, hashed_password: str) -> User:
         """adds new user to database via sqlalchemy session
 
         Args:
@@ -41,10 +41,9 @@ class DB:
         Returns:
             User: newely created user
         """
-        session = self._session
         user = User(email=email, hashed_password=hashed_password)
-        session.add(user)
-        session.commit()
+        self._session.add(user)
+        self._session.commit()
         return user
 
     def find_user_by(self, **kwargs) -> User:
